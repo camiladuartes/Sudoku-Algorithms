@@ -1,6 +1,6 @@
 # Heuristic for NP-Hard Sudoku problem using Graph Coloring
 
-In this work, the Largest-First heuristic was implemented to solve the Sudoku problem.
+In this project, the Largest-First heuristic was implemented to solve the Sudoku problem.
 
 This heuristic models the game on a graph and uses the Graph Coloring Problem to solve it, using the decreasing order of vertices by degree for graph coloring, iterating between them and coloring with the smallest available color.
 
