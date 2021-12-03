@@ -14,5 +14,5 @@ Camila Duarte.
 3. `cmake -G "Unix Makefiles" ..`
 4. `make`
 
-## Running the driver containing the tests with `assert`:
+## Running Main containing some tests:
 1. `./sudokuLFMain`
