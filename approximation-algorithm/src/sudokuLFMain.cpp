@@ -5,7 +5,7 @@
 #include <cmath>
 #include <set>
 #include "../include/largestFirst.h"
-#include "../include/util.h"
+#include "../../util/util.h"
 using namespace std;
 
 int main() {

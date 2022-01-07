@@ -7,7 +7,7 @@
 #include <map>
 #include <cmath>
 #include <set>
-#include "util.h"
+#include "../../util/util.h"
 using namespace std;
 
 /// Largest-First Heuristic to solve 9x9 Sudoku
