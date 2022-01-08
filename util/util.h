@@ -197,45 +197,15 @@ namespace ut{
     }
 
     /*!
-    * Convert the Sudoku vector in a matrix 9x9
+    * Returns a list with the positions of numbers equal to zero
     */
-    void convertMatrix(vector<int>& list, int grid[9][9]){
-        // 004300209 005009001 070060043 006002087 190007400 050083000 600000105 003508690 042910300
-        int j = 0, count = 0; 
-        for(int i = 0; i < list.size(); i++) {
-            count++;
-            grid[j][i] = list[i];
-
-            if(count == 9){
-                j++;
-                count = 0;
-            }
+    vector<int> emptyCells(vector<int> list){
+        vector<int> emptyList;
+        for(int i=0; i< list.size(); i++){
+            if(list[i] == 0)
+                emptyList.push_back(i);
         }
-    }
-
-    /*!
-    * Print the Sudoku vector in a matrix 9x9
-    */
-    void printMatrix(vector<int>& list, int grid[9][9]){
-        int j = 0, count = 0;
-
-        for(int i = 0; i < list.size(); i++) {
-            count++;
-            cout << grid[j][i] << " ";
-            if(count == 9){
-                j++;
-                count = 0;
-                cout << endl;
-            }
-        }
-    }
-
-    void print(int arr[N][N]){
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++)
-                cout << arr[i][j] << " ";
-            cout << endl;
-        }
+        return emptyList;
     }
 }
 

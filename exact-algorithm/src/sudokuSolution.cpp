@@ -15,19 +15,22 @@ int main(){
     int hits = 0, count = 0;
     auto start = chrono::high_resolution_clock::now();
 
-    for(int i=0; i<tam; i++){
+    for(int i=1; i<tam; i++){
         cout << "Solving Sudoku " << i << endl;
-        int grid[9][9] = ut::convertMatrix(sudokuList);
-        bt::solveSudoku(grid, 0, 0);
-        cout << endl;
 
-    //     vector<int> sudokuList = {};
-    //     vector<int> solutionList = {};
-    //     string sudokuString = sudoku[i];
-    //     string solutionString = solution[i];
+        vector<int> sudokuList = {};
+        vector<int> solutionList = {};
+        string sudokuString = sudoku[i];
+        string solutionString = solution[i];
 
         ut::convert(sudokuString, sudokuList);
         ut::convert(solutionString, solutionList);
+
+        // ut::printSudokuList(sudokuList);
+        // cout << endl;
+
+        ut::printSudokuList(bt::solveSudoku(sudokuList));    
+        cout << endl;
 
         if (sudokuList == solutionList) hits++;
         count++;
