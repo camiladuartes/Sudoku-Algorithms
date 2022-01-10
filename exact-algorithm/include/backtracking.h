@@ -111,48 +111,69 @@ namespace bt{
     vector<int> solveSudoku(vector<int>& sudokuList){
         map <int, int> attemps;
 
+        // Guardo em uma lista as posições do grid que são 0, e mapeio todas as posições para 0
         for (int i=0; i < ut::emptyCells(sudokuList).size(); i++){
             vector<int> empty = ut::emptyCells(sudokuList);
             attemps[empty[i]] = 0;
         }
 
+        // Crio uma lista com as posições vazias (0) do grid
         int count = 0, tryPutNumber = 0, validateNumber = 0;
-        vector<int> lista_sudoku_celulas_vazias = ut::emptyCells(sudokuList);
+        vector<int> sudokuListEmptyCells = ut::emptyCells(sudokuList);
 
-        while (count < lista_sudoku_celulas_vazias.size()){
-            int index = lista_sudoku_celulas_vazias[count];
+        // sudokuList = 497200000100400005000016098620300040300900000001072600002005870000600004530097061
+        // sudokuListEmptyCells = 4 5 6 7 8 10 11 13 14 15 16...
+        // attemps = {4, 0}, {5, 0}, {6, 0}, {7, 0}, {8, 0}, {10, 0} ...
+
+        while (count < sudokuListEmptyCells.size()){
+            // Para cada posição vazia no grid, tento colorir com o próximo valor disponível (sempre somando mais um)
+            int index = sudokuListEmptyCells[count];
             int attempCount = attemps[index] + 1;
 
+            // Caso a tentativa seja maior do que 9, significa que estou tentando adicionar um número inválido
             if (attempCount > 9){
                 sudokuList[index] = 0;
                 attemps[index] = 0;
-                count = count - 1;
+                count -= 1;
+
+                // Significa que o número não é válido para aquela célula
                 tryPutNumber = 1;
                 validateNumber = 0;
             } else{
+                // Significa que o número é válido para aquela célula
                 tryPutNumber = 0;
                 validateNumber = 1;
             }
 
+            // Enquanto o número for válido para aquela célula, confiro se o número que estou tentando colocar está na linha, coluna ou grid
             while (tryPutNumber == 0){
                 if (!ut::inList(attempCount, getForbiddenNumbers(sudokuList, index))){
+                    // Caso ele seja possível colorir a célula com o número, coloro e atualizo o map
                     sudokuList[index] = attempCount;
                     attemps[index] = attempCount;
+
+                    // Significa que já adicionei o número que deveria
                     tryPutNumber = 1;
                     validateNumber = 1;
                 } else {
+                // Caso o valor atual já esteja na lista (linha, coluna ou grid), tento adicionar o próximo valor disponível
                     if (attempCount == 9){
+                        // Caso já esteja na nona tentativa, significa que já foi adicionado todos os valores possíveis para aquela célula
                         sudokuList[index] = 0;
                         attemps[index] = 0;
-                        count = count - 1;
+                        count -= 1;
+
+                        // Significa que o número não era válido para a posição
                         tryPutNumber = 1;
                         validateNumber = 0;
                     }
-                    attempCount = attempCount + 1;
+                    // Atualizo minha tentativa com o próximo número disponível
+                    attempCount += 1;
                 }
             }
 
-            if(validateNumber == 1) count = count + 1;
+            // Se o número for válido, incremento o count para avançar para o próximo indice vazio da minha lista e repetir todo o processo
+            if(validateNumber == 1) count += 1;
         }
 
         return sudokuList;
