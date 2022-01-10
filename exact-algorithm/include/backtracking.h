@@ -125,9 +125,11 @@ namespace bt{
         // sudokuListEmptyCells = 4 5 6 7 8 10 11 13 14 15 16...
         // attemps = {4, 0}, {5, 0}, {6, 0}, {7, 0}, {8, 0}, {10, 0} ...
 
+        // Para cada posição vazia do grid, tenta colorir com o próximo valor disponível
         while (count < sudokuListEmptyCells.size()){
             // Para cada posição vazia no grid, tento colorir com o próximo valor disponível (sempre somando mais um)
             int index = sudokuListEmptyCells[count];
+            // Valor (cor) que estou tentando colorir (começa sendo 0+1 = 1)
             int attempCount = attemps[index] + 1;
 
             // Caso a tentativa seja maior do que 9, significa que estou tentando adicionar um número inválido
@@ -147,6 +149,7 @@ namespace bt{
 
             // Enquanto o número for válido para aquela célula, confiro se o número que estou tentando colocar está na linha, coluna ou grid
             while (tryPutNumber == 0){
+                // Checa se não é verdade que o valor está na lista dos números proibidos
                 if (!ut::inList(attempCount, getForbiddenNumbers(sudokuList, index))){
                     // Caso ele seja possível colorir a célula com o número, coloro e atualizo o map
                     sudokuList[index] = attempCount;
