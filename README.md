@@ -6,7 +6,7 @@ For the heuristic algorithm, the Largest-First heuristic models the game on a gr
 ## Compilation and Running
 1. `cd exact-algorithm/src/` or `cd heuristic/src/`
 2. `g++ sudokuSolution.cpp`
-3. `./a.out < ../../database/database.csv`
+3. `./a.out < ../../database/dataset.csv`
 
 ## Students:
 - Camila Duarte
