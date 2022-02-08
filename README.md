@@ -4,7 +4,7 @@ In this project, an **heuristic** and an **exact algorithm** using backtracking 
 
 For the heuristic algorithm, the Largest-First heuristic models the game on a graph and uses the Graph Coloring Problem to solve it, using the decreasing order of vertices by degree for graph coloring, iterating between them and coloring with the smallest available color.
 ## Compilation and Running
-1. `cd exact-algorithm/src/` or `cd heuristic/src/`
+1. `cd exact-algorithm/src/` or `cd heuristic/src/` or `cd meta-heuristic/src/`
 2. `g++ sudokuSolution.cpp`
 3. `./a.out < ../../database/database.csv`
 
