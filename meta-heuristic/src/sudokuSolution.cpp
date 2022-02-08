@@ -23,13 +23,13 @@ string convert_string(vector<ValueSet> sudokuVS){
     string ans = "";
 
     for(auto i : sudokuVS){
-        ans += to_string(i.Index());
+        ans += to_string(i.Index()+1);
     }
     return ans;
 }
 
 int main() {
-    int tam = 10;
+    int tam = 101;
     string sudoku[tam] = {""};
     string solution[tam] = {""};
 
@@ -40,31 +40,41 @@ int main() {
     int hits = 0, count = 0;
     auto start = chrono::high_resolution_clock::now();
 
+    vector<ValueSet> sudoku_VS;
+    vector<ValueSet> solution_VS; 
+    vector<int> sudokuList;
+
     for(int i=1; i<tam; i++){
         cout << "Solving Sudoku " << i << endl;
 
-        vector<int> sudokuList = {};
-        vector<int> solutionList = {};
+        sudokuList = {};
         string sudokuString = sudoku[i];
         string solutionString = solution[i];
 
         ut::convert(sudokuString, sudokuList);
-        ut::convert(solutionString, solutionList);
+        // ut::printSudokuList(sudokuList);
+        // cout << endl;
         
-        vector<ValueSet> sudoku_VS = convert_VS(sudokuList);
-        vector<ValueSet> solution_VS = ant::solve(sudoku_VS);
+        sudoku_VS = convert_VS(sudokuList);
+        solution_VS = ant::solve(sudoku_VS);
         string solution_string = convert_string(solution_VS);
 
-        cout << endl;
         if (solution_string == solutionString) hits++;
+
+        cout << "Sudoku initvazio: " << sudokuString << endl;
+        cout << "Solução esperada: " << solutionString << endl;
+        cout << "Solução formigas: " << solution_string << endl;
+        cout << endl;
+        
         count++;
+        cout << endl;
     }
 
     auto end = chrono::high_resolution_clock::now();
 
     cout << "Quantidade de sudokus resolvidos: " << count << endl;
     cout << "Quantidade de sudokus resolvidos corretamente: " << hits << endl;
-    cout << "Tempo decorrido para fim de processamento: " << (chrono::duration_cast<std::chrono::milliseconds>(end-start).count())/1000 << " s" << endl;
+    cout << "Tempo decorrido para fim de processamento: " << floorf(chrono::duration_cast<std::chrono::milliseconds>(end-start).count())/1000 << " s" << endl;
 
     /////////////////////////////////////
 

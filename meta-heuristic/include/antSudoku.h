@@ -6,17 +6,17 @@
 #include "valueSet.h"
 using namespace std;
 
-#define NUM_ANTS 10
+#define NUM_ANTS 1500
 #define NUM_CELLS 81
 #define NUM_UNITS 9
-#define PHER_0 1
+#define PHER_0 0.9
 
 /// Ant colonies heuristic to solve 9x9 Sudoku
 namespace ant{
     void set_cell(int ant, int i, const ValueSet &choice);
     
     double rho = 0.9;
-    double best_pher = 0, best_evap = 0;
+    double best_pher = 0, best_evap = 0.005;
     int best_ant = 0;   // indice da melhor formiga
 
     vector<ValueSet> best_solution = {};    // solucao final
@@ -26,6 +26,7 @@ namespace ant{
     vector<vector<ValueSet>> ant_solutions = {};
     vector<int> ant_cell = {};
     vector<int> fixed_cells = {};
+    vector<int> ants = {};
 
     // matriz global de feromonios (81x9)
     double **pher = 0;
@@ -35,17 +36,15 @@ namespace ant{
 	uniform_real_distribution<double> random_dist = uniform_real_distribution<double>(0.0, 1.0);
     
     /// Inicializa cada formiga em uma posição da sua cópia do puzzle
-    void init_ant(vector<ValueSet> puzzle, int start_position){
+    void init_ant(vector<ValueSet> &puzzle, int start_position){
         ant_solutions.push_back(puzzle);
         ant_cell.push_back(start_position);
         fail_cells.push_back(0);
         fixed_cells.push_back(0);
-
-        // roulette deixa pra depois...
     }
 
     void update_local_pher(int i, int choice){
-        pher[i][choice] = pher[i][choice] * 0.9f + PHER_0*0.1f;
+        pher[i][choice] = pher[i][choice] * 0.9 + PHER_0*0.1;
     }
 
     ///////////////////////
@@ -141,10 +140,11 @@ namespace ant{
         }
     }
 
-    void step_solution(int ant){
+    void step_solution(int &ant){
         // vector<ValueSet> sol = ant_solutions[ant];
         int i_cell = ant_cell[ant];
-
+        cout << fail_cells[ant] << endl;
+        
         // recupero posição do tabuleiro que a formiga está agora 
         if(ant_solutions[ant][i_cell].Empty())
             fail_cells[ant]++;
@@ -155,7 +155,7 @@ namespace ant{
             
             // começa o greedy solution
             ValueSet best;
-            double max_pher = -1.0;
+            double max_pher = INT_MIN;
 
             for(int j=0; j<NUM_UNITS; j++){
                 // vejo se posso escolher o choice pra essa célula
@@ -178,7 +178,7 @@ namespace ant{
     }
 
     /// Retorna o número de células que não tem conflitos
-    int num_cells_filled(int ant){
+    int num_cells_filled(int &ant){
         return NUM_CELLS - fail_cells[ant];
     }
 
@@ -200,7 +200,7 @@ namespace ant{
     void update_pher(){
         for(int i = 0; i < NUM_CELLS; i++){
             if(best_solution[i].Fixed()){
-                pher[i][best_solution[i].Index()] = pher[i][best_solution[i].Index()] * (1.0f-rho) + rho*best_pher;
+                pher[i][best_solution[i].Index()] = pher[i][best_solution[i].Index()] * (1.0-rho) + rho*best_pher;
             }
         }
     }
@@ -212,12 +212,22 @@ namespace ant{
     }
 
     /// Resolve o sudoku com formigas
-    vector<ValueSet> solve(vector<ValueSet> sudokuList){
+    vector<ValueSet> solve(vector<ValueSet> &sudokuList){
         bool solved = false;
         int aux = 0;
 
+        // limpando variáveis globais
+        best_pher = 0, best_evap = 0.005;
+        best_ant = 0;   
+        best_solution = {};    
+        fail_cells = {};
+        ant_solutions = {};
+        ant_cell = {};
+        fixed_cells = {};
+        pher = 0;
+
         // criando as formigas
-        vector<int> ants = {};
+        ants = {};
         for(int i=0; i<NUM_ANTS; i++){
             ants.push_back(i);
         }
@@ -235,8 +245,14 @@ namespace ant{
 
             // preencho as células uma de cada vez
             for(int i=0; i<sudokuList.size(); i++){
-                for(auto a : ants) step_solution(a);
-            }  
+                for(auto a : ants){
+                    // auto start = chrono::high_resolution_clock::now();
+                    step_solution(a);
+                    // auto end = chrono::high_resolution_clock::now();
+                    // cout << "Formiga " << a << " - Sudoku " << i << " - " << (chrono::duration_cast<std::chrono::milliseconds>(end-start).count())/1000 << " ms" << endl;
+                }
+                // cout << endl;
+            }
 
             int i_best = 0; // indice na melhor formiga
             int best_val = 0; 
@@ -256,7 +272,7 @@ namespace ant{
                 best_solution = ant_solutions[i_best];
                 best_pher = new_pher;
                 best_ant = best_val;
-    
+
                 if(best_val == 81){
                     solved = true;
                 }
@@ -267,6 +283,8 @@ namespace ant{
             best_pher *= (1.0-best_evap);
             aux++;
         }
+
+        // cout << "Melhor feromônio: " << best_pher << endl;
 
         clear_pher();
         return best_solution;
